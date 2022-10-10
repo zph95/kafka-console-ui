@@ -26,10 +26,11 @@ import request from "@/utils/request";
 import { KafkaTopicApi } from "@/utils/api";
 import notification from "ant-design-vue/lib/notification";
 import SendMessage from "@/views/message/SendMessage";
+import Header from "@/components/Header"
 import DeleteMessage from "./DeleteMessage";
 export default {
   name: "Message",
-  components: { DeleteMessage, SearchByTime, SearchByOffset, SendMessage },
+  components: { DeleteMessage, SearchByTime, SearchByOffset, SendMessage, Header},
   data() {
     return {
       loading: false,
