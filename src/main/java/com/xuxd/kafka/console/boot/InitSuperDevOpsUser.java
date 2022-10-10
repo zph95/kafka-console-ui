@@ -19,7 +19,7 @@ public class InitSuperDevOpsUser implements SmartInitializingSingleton {
     private final DevOpsUserMapper devOpsUserMapper;
     public final static String SUPER_USERNAME = "admin";
 
-    @Value("${devops.password:kafka-console-ui521}")
+    @Value("${devops.password:kafka-admin}")
     private String password;
 
     @Override

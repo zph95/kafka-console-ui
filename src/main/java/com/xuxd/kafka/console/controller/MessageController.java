@@ -3,6 +3,7 @@ package com.xuxd.kafka.console.controller;
 import com.xuxd.kafka.console.beans.QueryMessage;
 import com.xuxd.kafka.console.beans.ResponseData;
 import com.xuxd.kafka.console.beans.SendMessage;
+import com.xuxd.kafka.console.beans.annotation.RequiredAuthorize;
 import com.xuxd.kafka.console.beans.dto.QueryMessageDTO;
 import com.xuxd.kafka.console.service.MessageService;
 import org.apache.commons.collections.CollectionUtils;
@@ -45,16 +46,19 @@ public class MessageController {
     }
 
     @PostMapping("/send")
+    @RequiredAuthorize
     public Object send(@RequestBody SendMessage message) {
         return messageService.send(message);
     }
 
     @PostMapping("/resend")
+    @RequiredAuthorize
     public Object resend(@RequestBody SendMessage message) {
         return messageService.resend(message);
     }
 
     @DeleteMapping
+    @RequiredAuthorize
     public Object delete(@RequestBody List<QueryMessage> messages) {
         if (CollectionUtils.isEmpty(messages)) {
             return ResponseData.create().failed("params is null");
