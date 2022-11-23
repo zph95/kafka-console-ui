@@ -45,6 +45,7 @@
               href="javascript:;"
               class="operation-btn"
               @click="openUpdateClusterInfoDialog(record)"
+              v-show="manager"
               >编辑
             </a-button>
             <a-popconfirm
@@ -58,6 +59,7 @@
                 href="javascript:;"
                 class="operation-btn"
                 type="danger"
+                v-show="manager"
                 >删除
               </a-button>
             </a-popconfirm>
@@ -89,6 +91,7 @@ import AddClusterInfo from "@/views/op/AddClusterInfo";
 import notification from "ant-design-vue/lib/notification";
 import { mapMutations } from "vuex";
 import { CLUSTER } from "@/store/mutation-types";
+import {isManager} from "../../utils/role";
 
 export default {
   name: "Cluster",
@@ -101,6 +104,7 @@ export default {
   },
   data() {
     return {
+      manager: isManager(),
       columns: columns,
       show: this.visible,
       data: [],

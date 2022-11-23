@@ -1,5 +1,6 @@
 package com.xuxd.kafka.console.controller;
 
+import com.xuxd.kafka.console.beans.annotation.RequiredAuthorize;
 import com.xuxd.kafka.console.beans.dto.ClusterInfoDTO;
 import com.xuxd.kafka.console.service.ClusterService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,11 +35,13 @@ public class ClusterController {
     }
 
     @DeleteMapping("/info")
+    @RequiredAuthorize
     public Object deleteClusterInfo(@RequestBody ClusterInfoDTO dto) {
         return clusterService.deleteClusterInfo(dto.getId());
     }
 
     @PutMapping("/info")
+    @RequiredAuthorize
     public Object updateClusterInfo(@RequestBody ClusterInfoDTO dto) {
         return clusterService.updateClusterInfo(dto.to());
     }
