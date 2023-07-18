@@ -51,6 +51,12 @@ public class MessageController {
         return messageService.send(message);
     }
 
+    @PostMapping("/sendWithHeader")
+    @RequiredAuthorize
+    public Object sendWithHeader(@RequestBody SendMessage message) {
+        return messageService.sendWithHeader(message);
+    }
+
     @PostMapping("/resend")
     @RequiredAuthorize
     public Object resend(@RequestBody SendMessage message) {

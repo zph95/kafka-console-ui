@@ -3,76 +3,76 @@
     <a-spin :spinning="loading">
       <a-form :form="form" @submit="handleSubmit">
         <a-form-item label="Topic">
-          <a-select
-            class="topic-select"
-            @change="handleTopicChange"
-            show-search
-            option-filter-prop="children"
+          <a-select class="topic-select" @change="handleTopicChange" show-search option-filter-prop="children"
             v-decorator="[
               'topic',
               {
                 rules: [{ required: true, message: '请选择一个topic!' }],
               },
-            ]"
-            placeholder="请选择一个topic"
-          >
+            ]" placeholder="请选择一个topic">
             <a-select-option v-for="v in topicList" :key="v" :value="v">
               {{ v }}
             </a-select-option>
           </a-select>
         </a-form-item>
         <a-form-item label="分区">
-          <a-select
-            class="type-select"
-            show-search
-            option-filter-prop="children"
-            v-model="selectPartition"
-            placeholder="请选择一个分区"
-          >
+          <a-select class="type-select" show-search option-filter-prop="children" v-model="selectPartition"
+            placeholder="请选择一个分区">
             <a-select-option v-for="v in partitions" :key="v" :value="v">
               <span v-if="v == -1">默认</span> <span v-else>{{ v }}</span>
             </a-select-option>
           </a-select>
         </a-form-item>
+        <a-form-item label="消息头">
+          <table>
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Value</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(row, index) in rows" :key="index">
+                <td><input type="headerKey" v-model="row.headerKey" /></td>
+                <td><input type="headerValue" v-model="row.headerValue" /></td>
+                <td><a-button type="primary" @click="deleteRow(index)">Delete</a-button></td>
+              </tr>
+            </tbody>
+            <a-button type="primary" @click="addRow">Add Row</a-button>
+          </table>
+        </a-form-item>
         <a-form-item label="消息Key">
           <a-input v-decorator="['key', { initialValue: 'key' }]" />
         </a-form-item>
         <a-form-item label="消息体" has-feedback>
-          <a-textarea
-            v-decorator="[
-              'body',
-              {
-                rules: [
-                  {
-                    required: true,
-                    message: '输入消息体!',
-                  },
-                ],
-              },
-            ]"
-            placeholder="输入消息体!"
-          />
+          <a-textarea v-decorator="[
+            'body',
+            {
+              rules: [
+                {
+                  required: true,
+                  message: '输入消息体!',
+                },
+              ],
+            },
+          ]" placeholder="输入消息体!" />
         </a-form-item>
         <a-form-item label="发送的消息数">
-          <a-input-number
-            v-decorator="[
-              'num',
-              {
-                initialValue: 1,
-                rules: [
-                  {
-                    required: true,
-                    message: '输入消息数!',
-                  },
-                ],
-              },
-            ]"
-            :min="1"
-            :max="32"
-          />
+          <a-input-number v-decorator="[
+            'num',
+            {
+              initialValue: 1,
+              rules: [
+                {
+                  required: true,
+                  message: '输入消息数!',
+                },
+              ],
+            },
+          ]" :min="1" :max="32" />
         </a-form-item>
         <a-form-item :wrapper-col="{ span: 12, offset: 5 }">
-          <a-button type="primary" html-type="submit"> 提交 </a-button>
+          <a-button @click="submitForm" type="primary" html-type="submit"> 提交 </a-button>
         </a-form-item>
       </a-form>
     </a-spin>
@@ -97,6 +97,7 @@ export default {
       loading: false,
       partitions: [],
       selectPartition: undefined,
+      rows: [{ headerKey: '', headerValue: '' }],
     };
   },
   methods: {
@@ -137,17 +138,24 @@ export default {
       this.selectPartition = -1;
       this.getPartitionInfo(topic);
     },
-    handleSubmit(e) {
-      e.preventDefault();
+    addRow() {
+      this.rows.push({ HeaderKey: '', HeaderValue: '' });
+    },
+    deleteRow(index) {
+      this.rows.splice(index, 1);
+    },
+    submitForm() {
+    //  e.preventDefault();
       this.form.validateFields((err, values) => {
         if (!err) {
           const param = Object.assign({}, values, {
             partition: this.selectPartition,
+            headers: this.rows,
           });
           this.loading = true;
           request({
-            url: KafkaMessageApi.send.url,
-            method: KafkaMessageApi.send.method,
+            url: KafkaMessageApi.sendWithHeader.url,
+            method: KafkaMessageApi.sendWithHeader.method,
             data: param,
           }).then((res) => {
             this.loading = false;
